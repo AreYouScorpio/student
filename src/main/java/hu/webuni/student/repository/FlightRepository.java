@@ -1,6 +1,5 @@
 package hu.webuni.student.repository;
 
-import hu.webuni.student.model.Flight;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;

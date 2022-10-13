@@ -1,7 +1,7 @@
 package hu.webuni.student.mapper;
 
 import hu.webuni.student.dto.AirportDto;
-import hu.webuni.student.model.Airport;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;

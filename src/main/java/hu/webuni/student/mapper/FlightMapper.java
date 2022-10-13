@@ -5,7 +5,6 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 import hu.webuni.student.dto.FlightDto;
-import hu.webuni.student.model.Flight;
 
 @Mapper(componentModel = "spring")
 public interface FlightMapper {

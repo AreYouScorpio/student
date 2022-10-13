@@ -1,7 +1,6 @@
 package hu.webuni.student.service;
 
 
-import hu.webuni.student.config.AirportConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

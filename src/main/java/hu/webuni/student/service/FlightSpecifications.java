@@ -1,7 +1,6 @@
 package hu.webuni.student.service;
 
 import hu.webuni.student.model.Airport_;
-import hu.webuni.student.model.Flight;
 import hu.webuni.student.model.Flight_;
 import org.springframework.data.jpa.domain.Specification;
 

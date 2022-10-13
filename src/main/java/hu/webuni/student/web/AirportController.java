@@ -2,7 +2,6 @@ package hu.webuni.student.web;
 
 import hu.webuni.student.dto.AirportDto;
 import hu.webuni.student.mapper.AirportMapper;
-import hu.webuni.student.model.Airport;
 import hu.webuni.student.service.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

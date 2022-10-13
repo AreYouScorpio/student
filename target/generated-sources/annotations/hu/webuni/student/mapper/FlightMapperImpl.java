@@ -1,7 +1,7 @@
 package hu.webuni.student.mapper;
 
 import hu.webuni.student.dto.FlightDto;
-import hu.webuni.student.model.Flight;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;

@@ -2,7 +2,6 @@ package hu.webuni.student;
 
 import hu.webuni.student.service.AirportService;
 import hu.webuni.student.service.InitDbService;
-import hu.webuni.student.service.PriceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

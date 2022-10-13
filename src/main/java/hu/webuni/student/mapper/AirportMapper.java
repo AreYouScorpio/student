@@ -1,7 +1,6 @@
 package hu.webuni.student.mapper;
 
 import hu.webuni.student.dto.AirportDto;
-import hu.webuni.student.model.Airport;
 import org.mapstruct.Mapper;
 
 import java.util.List;

@@ -1,8 +1,5 @@
 package hu.webuni.student.service;
 
-import hu.webuni.student.model.Airport;
-import hu.webuni.student.model.AirportUser;
-import hu.webuni.student.model.Flight;
 import hu.webuni.student.repository.AirportRepository;
 import hu.webuni.student.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,5 @@
 package hu.webuni.student.security;
 
-import hu.webuni.student.model.AirportUser;
 import hu.webuni.student.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,7 +1,5 @@
 package hu.webuni.student.service;
 
-import hu.webuni.student.model.Airport;
-import hu.webuni.student.model.Flight;
 import hu.webuni.student.repository.AirportRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.TemporalUnitWithinOffset;

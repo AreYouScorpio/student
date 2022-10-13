@@ -4,7 +4,6 @@ package hu.webuni.student.web;
 import com.querydsl.core.types.Predicate;
 import hu.webuni.student.dto.FlightDto;
 import hu.webuni.student.mapper.FlightMapper;
-import hu.webuni.student.model.Flight;
 import hu.webuni.student.repository.FlightRepository;
 import hu.webuni.student.service.FlightService;
 import lombok.RequiredArgsConstructor;

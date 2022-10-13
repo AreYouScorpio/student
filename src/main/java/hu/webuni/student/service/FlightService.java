@@ -3,8 +3,6 @@ package hu.webuni.student.service;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
-import hu.webuni.student.model.Airport;
-import hu.webuni.student.model.Flight;
 import hu.webuni.student.model.QFlight;
 import hu.webuni.student.repository.AirportRepository;
 import hu.webuni.student.repository.FlightRepository;
