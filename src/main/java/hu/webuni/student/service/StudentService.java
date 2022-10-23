@@ -16,6 +16,8 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -72,6 +74,44 @@ public class StudentService {
 
         //return flightRepository.findAll(spec, Sort.by("id"));
         return Lists.newArrayList(studentRepository.findAll(ExpressionUtils.allOf(predicates)));
+    }
+
+    public List<Student> findAll() {
+        // return new ArrayList<>(airports.values());
+        // return em.createQuery("SELECT a from Airport a", Airport.class).getResultList();
+
+        return studentRepository.findAll();
+    }
+
+    public Optional<Student> findById(long id) {
+        //return airports.get(id);
+        //return em.find(Airport.class, id);
+        return studentRepository.findById(id);
+    }
+
+    @Transactional
+    public void delete(long id) {
+        // em.remove(findById(id));
+        // airports.remove(id);
+        studentRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Student update(Student student) {
+        // airports.put(id, airport);
+        //checkUniqueIata(airport.getIata(), airport.getId());
+        if (studentRepository.existsById(student.getId())) {
+            //return airport;
+            //return em.merge(airport); SD--->
+
+//            logEntryService.createLog(String.format("Airport modified with id %d new name is %s",
+//                    airport.getId(),
+//                    airport.getName()));
+//
+//            callBackendSystem(); // mesterséges hiba generátor
+            return studentRepository.save(student);
+        } else
+            throw new NoSuchElementException();
     }
 
 }

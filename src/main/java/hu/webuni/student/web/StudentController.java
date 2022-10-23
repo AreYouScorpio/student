@@ -1,12 +1,12 @@
 package hu.webuni.student.web;
 
-import hu.webuni.student.dto.AirportDto;
-import hu.webuni.student.mapper.AirportMapper;
+import hu.webuni.student.dto.StudentDto;
+import hu.webuni.student.mapper.StudentMapper;
+import hu.webuni.student.model.Student;
 import hu.webuni.student.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/airports")
+@RequestMapping("/api/students")
 public class StudentController {
 
     //https://mapstruct.org/ minták !!! és pom.xml --- https://mapstruct.org/documentation/installation/
@@ -30,14 +30,14 @@ public class StudentController {
     //LogEntryService logEntryService;
 
     @GetMapping
-    public List<AirportDto> getAll() {
-        return airportMapper.airportsToDtos(airportService.findAll());
+    public List<StudentDto> getAllStudent() {
+        return studentMapper.studentsToDtos(studentService.findAll());
     }
 
 
     @GetMapping("/{id}")
-    public AirportDto getById(@PathVariable long id) {
-        Airport airport = airportService.findById(id)
+    public StudentDto getStudentById(@PathVariable long id) {
+        Student student = studentService.findById(id)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // deleted after mapper ---> AirportDto airportDto = airports.get(id);
@@ -51,28 +51,28 @@ public class StudentController {
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         */
-        return airportMapper.airportToDto(airport);
+        return studentMapper.studentToDto(student);
 
     }
 
 
     @PostMapping
-    public AirportDto createAirport(@RequestBody @Valid AirportDto airportDto /*, BindingResult errors */) {
+    public StudentDto createStudent(@RequestBody @Valid StudentDto studentDto /*, BindingResult errors */) {
         //if (errors.hasErrors()) throw new ...
 
 
         // áthelyezve mapper bevezetésével a service-be:
         // checkUniqueIata(airportDto.getIata());
 
-        Airport airport = airportService.save(airportMapper.dtoToAirport(airportDto));
+        Student student = studentService.save(studentMapper.dtoToStudent(studentDto));
         // szintén törölve áthelyezés miatt --> airports.put(airportDto.getId(), airportDto);
         // return airportDto; --->
-        return airportMapper.airportToDto(airport);
+        return studentMapper.studentToDto(student);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable long id) {
-        airportService.delete(id);
+    public void deleteStudent(@PathVariable long id) {
+        studentService.delete(id);
     }
 
 
@@ -123,21 +123,20 @@ new PutMapping after MapStruct added:
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')") //ez csak akkor értékelődik ki, ha a SecurityConfigban megkérem @EnableGlobalMethodSecurityben
-    public ResponseEntity<AirportDto> modifyAirport(@PathVariable long id,
-                                                    @RequestBody AirportDto airportDto) {
+    public ResponseEntity<StudentDto> modifyStudent(@PathVariable long id,
+                                                    @RequestBody StudentDto studentDto) {
 
-        Airport airport = airportMapper.dtoToAirport(airportDto);
-        airport.setId(id); // hogy tudjunk módosítani azonos iata-jút a uniqecheck ellenére
+        Student student = studentMapper.dtoToStudent(studentDto);
+        student.setId(id); // hogy tudjunk módosítani azonos iata-jút a uniqecheck ellenére
         try {
-            AirportDto savedAirportDto = airportMapper.airportToDto(airportService.update(airport));
+            StudentDto savedStudentDto = studentMapper.studentToDto(studentService.update(student));
 
             // LogEntryRepository.save(new LogEntry("Airport modified with id " + id)); -- service hozzáadva
             // logEntryService.createLog("Airport modified with id " + id); -inkább a service update legyen felelős érte, h a logot lementse
             // a service autowired-et is lehet így innét törölni, átvinni AirportService-be
 
 
-            return ResponseEntity.ok(savedAirportDto);
+            return ResponseEntity.ok(savedStudentDto);
         }
         catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

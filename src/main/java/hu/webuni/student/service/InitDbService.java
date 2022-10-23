@@ -1,61 +1,34 @@
 package hu.webuni.student.service;
 
-import hu.webuni.student.repository.AirportRepository;
-import hu.webuni.student.repository.UserRepository;
+import hu.webuni.student.model.Student;
+import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Set;
+import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @Service
 public class InitDbService {
 
-    UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
+
 
     @Autowired
-    AirportRepository airportRepository;
+    StudentRepository studentRepository;
     @Autowired
-    FlightService flightService;
-
-    public InitDbService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        //super();
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @Transactional
-    public void createUsersIfNeeded() {
-        //userRepository.deleteAll(); - ha vmi szemét maradt a rendszerben, töröljük ki
-        if(!userRepository.existsById("admin")) {
-            userRepository.save(
-                    new AirportUser("admin", passwordEncoder.encode("pass"),
-                            Set.of("admin", "user") ));}
-        if(!userRepository.existsById("user")) {
-            userRepository.save(
-                    new AirportUser("user",
-                            passwordEncoder.encode("pass"),
-                            Set.of("user") ));}
+    StudentService studentService;
 
 
-        }
 
     @Transactional
     public void addInitData() {
-        Airport airport1 = airportRepository.save(new Airport("airport1", "BUD"));
-        Airport airport2 = airportRepository.save(new Airport("airport2", "LAX"));
-        Airport airport3 = airportRepository.save(new Airport("airport3", "JFK"));
-        Airport airport4 = airportRepository.save(new Airport("airport4", "LGW"));
+        Student student1 = studentRepository.save(new Student("student1", LocalDate.of(1977, 6, 27), 1));
+        Student student2 = studentRepository.save(new Student("student2", LocalDate.of(1977, 7, 27), 2));
+        Student student3 = studentRepository.save(new Student("student3", LocalDate.of(1977, 8, 27), 3));
+        Student student4 = studentRepository.save(new Student("student4", LocalDate.of(1977, 9, 27), 4));
 
-        flightService.save(new Flight(0, "ABC123", LocalDateTime.of(2022, 6, 10, 10, 10), airport1, airport2));
-        flightService.save(new Flight(0, "ABC456", LocalDateTime.of(2022, 6, 10, 12, 10), airport2, airport3));
-        flightService.save(new Flight(0, "DEF234", LocalDateTime.of(2022, 6, 12, 14, 10), airport2, airport4));
-        flightService.save(new Flight(0, "GHI345", LocalDateTime.of(2022, 6, 13, 16, 10), airport4, airport1));
     }
 
     }

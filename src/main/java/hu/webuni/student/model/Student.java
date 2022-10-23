@@ -27,6 +27,9 @@ public class Student {
     private LocalDate birthdate;
     private int semester;
 
-
-
+    public Student(String name, LocalDate birthdate, int semester) {
+        this.name = name;
+        this.birthdate = birthdate;
+        this.semester = semester;
+    }
 }
