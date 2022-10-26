@@ -137,8 +137,11 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <!--
                     <source>9</source> <!-- depending on your project , this is for auto mapping solar -->
+                    <!--
                     <target>9</target> <!-- depending on your project -->
+                    <!-- ha ez benne marad, null-t ad vissza a PostMan-->
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -150,13 +153,16 @@
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
                         </path>
-
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
                         <!-- other annotation processors -->
                         <path>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-jpamodelgen</artifactId>
-                            <version>5.6.9.Final</version>
-                            <!--.. target ktárat törölni, és újraindítani 1x az alkalmazást .. ha kitöröljük verziót, akkor a meglévőt örökli-->
+                            <version>5.6.3.Final</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
