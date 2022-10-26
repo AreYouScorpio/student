@@ -29,4 +29,10 @@ public class Course {
 
     @ManyToOne
     private Teacher teacher;
+
+    public Course(String name, Student student, Teacher teacher) {
+        this.name = name;
+        this.student = student;
+        this.teacher = teacher;
+    }
 }
