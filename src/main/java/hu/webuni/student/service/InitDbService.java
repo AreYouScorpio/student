@@ -1,7 +1,11 @@
 package hu.webuni.student.service;
 
+import hu.webuni.student.model.Course;
 import hu.webuni.student.model.Student;
+import hu.webuni.student.model.Teacher;
+import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
+import hu.webuni.student.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +18,16 @@ import java.time.LocalDate;
 public class InitDbService {
 
 
-
     @Autowired
     StudentRepository studentRepository;
     @Autowired
-    StudentService studentService;
+    TeacherRepository teacherRepository;
 
+    @Autowired
+    CourseRepository courseRepository;
+
+    @Autowired
+    StudentService studentService;
 
 
     @Transactional
@@ -29,8 +37,19 @@ public class InitDbService {
         Student student3 = studentRepository.save(new Student("student3", LocalDate.of(1977, 8, 27), 3));
         Student student4 = studentRepository.save(new Student("student4", LocalDate.of(1977, 9, 27), 4));
 
-    }
+        Teacher teacher1 = teacherRepository.save(new Teacher("teacher1", LocalDate.of(1948, 10, 22)));
+        Teacher teacher2 = teacherRepository.save(new Teacher("teacher1", LocalDate.of(1948, 10, 23)));
+        Teacher teacher3 = teacherRepository.save(new Teacher("teacher1", LocalDate.of(1948, 10, 24)));
+        Teacher teacher4 = teacherRepository.save(new Teacher("teacher1", LocalDate.of(1948, 10, 25)));
+
+
+        Course course1 = courseRepository.save(new Course("angol"));
+        Course course2 = courseRepository.save(new Course("nemet"));
+        Course course3 = courseRepository.save(new Course("holland"));
+        Course course4 = courseRepository.save(new Course("magyar"));
 
     }
+
+}
 
 

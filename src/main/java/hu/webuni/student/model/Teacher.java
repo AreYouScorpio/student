@@ -26,4 +26,8 @@ public class Teacher {
     //@Size (min = 3, max = 10)
     private LocalDate birthdate;
 
+    public Teacher(String name, LocalDate birthdate) {
+        this.name = name;
+        this.birthdate = birthdate;
+    }
 }

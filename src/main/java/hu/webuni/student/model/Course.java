@@ -35,4 +35,9 @@ public class Course {
         this.student = student;
         this.teacher = teacher;
     }
+
+
+    public Course(String name) {
+        this.name = name;
+    }
 }
