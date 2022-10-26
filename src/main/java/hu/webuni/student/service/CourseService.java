@@ -41,7 +41,7 @@ public class CourseService {
 
         String teacherName = example.getTeacher().getName();
 
-        long studentId = example.getId();
+        long studentId = example.getStudent().getId();
 
 
         int semester = example.getStudent().getSemester();

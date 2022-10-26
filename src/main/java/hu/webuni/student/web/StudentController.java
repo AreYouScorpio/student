@@ -144,7 +144,13 @@ new PutMapping after MapStruct added:
     }
 
 
+    @PostMapping("/search")
+    public List<StudentDto> searchFlights(@RequestBody StudentDto example){
 
+
+
+        return studentMapper.studentsToDtos(studentService.findStudentsByExample(studentMapper.dtoToStudent(example)));
+    }
 
 
 
