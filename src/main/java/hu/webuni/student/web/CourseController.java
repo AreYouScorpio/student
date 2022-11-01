@@ -3,6 +3,7 @@ package hu.webuni.student.web;
 import hu.webuni.student.dto.CourseDto;
 import hu.webuni.student.mapper.CourseMapper;
 import hu.webuni.student.model.Course;
+import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ public class CourseController {
 
     @Autowired
     CourseMapper courseMapper;
+
+    @Autowired
+    CourseRepository courseRepository;
 
     //@Autowired
     //LogEntryService logEntryService;
