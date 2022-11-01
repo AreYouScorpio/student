@@ -38,9 +38,9 @@ public class InitDbService {
         Student student4 = studentRepository.save(new Student("student4", LocalDate.of(1977, 9, 27), 4));
 
         Teacher teacher1 = teacherRepository.save(new Teacher("teacher1", LocalDate.of(1948, 10, 22)));
-        Teacher teacher2 = teacherRepository.save(new Teacher("teacher1", LocalDate.of(1948, 10, 23)));
-        Teacher teacher3 = teacherRepository.save(new Teacher("teacher1", LocalDate.of(1948, 10, 24)));
-        Teacher teacher4 = teacherRepository.save(new Teacher("teacher1", LocalDate.of(1948, 10, 25)));
+        Teacher teacher2 = teacherRepository.save(new Teacher("teacher2", LocalDate.of(1948, 10, 23)));
+        Teacher teacher3 = teacherRepository.save(new Teacher("teacher3", LocalDate.of(1948, 10, 24)));
+        Teacher teacher4 = teacherRepository.save(new Teacher("teacher4", LocalDate.of(1948, 10, 25)));
 
 
         Course course1 = courseRepository.save(new Course("angol"));
