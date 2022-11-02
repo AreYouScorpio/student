@@ -5,9 +5,12 @@ import hu.webuni.student.model.Teacher;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 public class CourseDto {
+
 
 
     private long id;
@@ -15,8 +18,7 @@ public class CourseDto {
     //@Size(min = 3, max = 20)
     private String name;
 
-    private Student student;
+    private Set<Student> students;
 
-
-    private Teacher teacher;
+    private Set<Teacher> teachers;
 }

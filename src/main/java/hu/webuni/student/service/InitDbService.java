@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -43,10 +44,18 @@ public class InitDbService {
         Teacher teacher4 = teacherRepository.save(new Teacher("teacher4", LocalDate.of(1948, 10, 25)));
 
 
-        Course course1 = courseRepository.save(new Course("angol", student1, teacher1));
-        Course course2 = courseRepository.save(new Course("nemet", student2, teacher2));
-        Course course3 = courseRepository.save(new Course("holland", student3, teacher3));
-        Course course4 = courseRepository.save(new Course("magyar", student4, teacher4));
+        Course course1 = courseRepository.save(new Course("angol", Set.of(student1), Set.of(teacher1)));
+        Course course2 = courseRepository.save(new Course("nemet", Set.of(student2), Set.of(teacher2)));
+        Course course3 = courseRepository.save(new Course("holland", Set.of(student3), Set.of(teacher3)));
+        Course course4 = courseRepository.save(new Course("magyar", Set.of(student4), Set.of(teacher4)));
+
+
+
+//        Course course1 = courseRepository.save(new Course("angol", student1, teacher1));
+//        Course course2 = courseRepository.save(new Course("nemet", student2, teacher2));
+//        Course course3 = courseRepository.save(new Course("holland", student3, teacher3));
+//        Course course4 = courseRepository.save(new Course("magyar", student4, teacher4));
+
 
     }
 

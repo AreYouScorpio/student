@@ -1,21 +1,13 @@
 package hu.webuni.student.service;
 
-import com.google.common.collect.Lists;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Predicate;
 import hu.webuni.student.model.Course;
-import hu.webuni.student.model.QCourse;
-import hu.webuni.student.model.Student;
-import hu.webuni.student.model.Teacher;
 import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -37,6 +29,10 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    /* my old version
+    *** from here
+
+
     public List<Course> findCoursesByExample(Course example) {
         long courseId = example.getId();
         System.out.println(courseId);
@@ -48,11 +44,14 @@ public class CourseService {
             teacherName = teacher.getName();
         System.out.println(teacherName);
         long studentId = 0L;
+        int semester = 0;
         Student student = example.getStudent();
         if (student != null)
             studentId = student.getId();
         System.out.println(studentId);
-//        int semester = example.getStudent().getSemester();
+        if (student != null)
+            semester = example.getStudent().getSemester();
+        System.out.println(semester);
 
 
         //Specification<Flight> spec = Specification.where(null); // üres Specification, ami semmire nem szűr
@@ -85,11 +84,20 @@ public class CourseService {
             predicates.add(course.student.id.eq(studentId));
         }
 
+        if (semester > 0) {
+
+            // spec = spec.and(FlightSpecifications.hasId(id));
+            predicates.add(course.student.semester.between(semester, semester));
+        }
+
 
 
         //return flightRepository.findAll(spec, Sort.by("id"));
         return Lists.newArrayList(courseRepository.findAll(ExpressionUtils.allOf(predicates)));
     }
+
+    * to here ***
+     */
 
     public List<Course> findAll() {
         // return new ArrayList<>(airports.values());

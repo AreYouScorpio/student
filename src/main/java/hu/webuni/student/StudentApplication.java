@@ -32,8 +32,11 @@ public class StudentApplication implements CommandLineRunner{
 //		initDbService.createUsersIfNeeded();
 
 		initDbService.addInitData();
+
 	}
 
 //teszt
+
+
 
 }

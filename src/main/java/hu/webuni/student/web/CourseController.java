@@ -1,11 +1,14 @@
 package hu.webuni.student.web;
 
+import com.querydsl.core.types.Predicate;
 import hu.webuni.student.dto.CourseDto;
 import hu.webuni.student.mapper.CourseMapper;
 import hu.webuni.student.model.Course;
 import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.service.CourseService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/courses")
 public class CourseController {
@@ -35,14 +39,14 @@ public class CourseController {
 
     @GetMapping
     public List<CourseDto> getAllCourse() {
-        return courseMapper.coursesToDtos(courseService.findAll());
+        return courseMapper.coursesToDtos(courseRepository.findAll());
     }
 
 
     @GetMapping("/{id}")
     public CourseDto getCourseById(@PathVariable long id) {
         Course course = courseService.findById(id)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // deleted after mapper ---> AirportDto airportDto = airports.get(id);
 //        if (airportDto!=null)
@@ -68,11 +72,21 @@ public class CourseController {
         // áthelyezve mapper bevezetésével a service-be:
         // checkUniqueIata(airportDto.getIata());
 
-        Course course = courseService.save(courseMapper.dtoToCourse(courseDto));
+        Course course = courseRepository.save(courseMapper.dtoToCourse(courseDto));
         // szintén törölve áthelyezés miatt --> airports.put(airportDto.getId(), airportDto);
         // return airportDto; --->
         return courseMapper.courseToDto(course);
     }
+
+
+    // Teacher`s solution added:
+    @GetMapping("/searchNew")
+    public List<CourseDto> search(@QuerydslPredicate(root = Course.class) Predicate predicate) {
+        Iterable<Course> courses = courseRepository.findAll(predicate);
+       return courseMapper.courseSummariesToDtos(courses);
+
+    }
+
 
     @DeleteMapping("/{id}")
     public void deleteCourse(@PathVariable long id) {
@@ -128,7 +142,7 @@ new PutMapping after MapStruct added:
 
     @PutMapping("/{id}")
     public ResponseEntity<CourseDto> modifyCourse(@PathVariable long id,
-                                                    @RequestBody CourseDto courseDto) {
+                                                  @RequestBody CourseDto courseDto) {
 
         Course course = courseMapper.dtoToCourse(courseDto);
         course.setId(id); // hogy tudjunk módosítani azonos iata-jút a uniqecheck ellenére
@@ -141,20 +155,24 @@ new PutMapping after MapStruct added:
 
 
             return ResponseEntity.ok(savedCourseDto);
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
 
-    @PostMapping("/search")
-    public List<CourseDto> searchCourses(@RequestBody CourseDto example){
+    /* my old solution
 
+    @PostMapping("/search")
+    public List<CourseDto> searchCourses(@RequestBody CourseDto example) {
 
 
         return courseMapper.coursesToDtos(courseService.findCoursesByExample(courseMapper.dtoToCourse(example)));
     }
+
+
+     */
+
 
 
 

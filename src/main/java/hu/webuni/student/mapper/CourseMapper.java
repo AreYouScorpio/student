@@ -2,7 +2,10 @@ package hu.webuni.student.mapper;
 
 import hu.webuni.student.dto.CourseDto;
 import hu.webuni.student.model.Course;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -10,9 +13,20 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CourseMapper {
 
-    List<CourseDto> coursesToDtos(List<Course> courses);
 
     CourseDto courseToDto(Course course);
+
+    @Named("summary")
+    @Mapping(ignore = true, target = "teachers")
+    @Mapping(ignore = true, target = "students")
+    CourseDto courseSummaryToDto(Course course);
+
+    @IterableMapping(qualifiedByName = "summary")
+    List<CourseDto> courseSummariesToDtos(Iterable<Course> findAll);
+
+
+    List<CourseDto> coursesToDtos(Iterable<Course> courses);
+
 
     Course dtoToCourse(CourseDto courseDto);
 }
@@ -27,4 +41,6 @@ public interface CourseMapper {
         CarDto carToCarDto(Car car); 2
 
          */
+
+
 
