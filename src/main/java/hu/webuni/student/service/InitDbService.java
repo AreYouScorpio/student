@@ -43,10 +43,10 @@ public class InitDbService {
         Teacher teacher4 = teacherRepository.save(new Teacher("teacher4", LocalDate.of(1948, 10, 25)));
 
 
-        Course course1 = courseRepository.save(new Course("angol"));
-        Course course2 = courseRepository.save(new Course("nemet"));
-        Course course3 = courseRepository.save(new Course("holland"));
-        Course course4 = courseRepository.save(new Course("magyar"));
+        Course course1 = courseRepository.save(new Course("angol", student1, teacher1));
+        Course course2 = courseRepository.save(new Course("nemet", student2, teacher2));
+        Course course3 = courseRepository.save(new Course("holland", student3, teacher3));
+        Course course4 = courseRepository.save(new Course("magyar", student4, teacher4));
 
     }
 

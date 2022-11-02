@@ -138,9 +138,9 @@
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <!--
-                    <source>9</source> <!-- depending on your project , this is for auto mapping solar -->
+                    <source>9</source> <!- depending on your project , this is for auto mapping solar -->
                     <!--
-                    <target>9</target> <!-- depending on your project -->
+                    <target>9</target> <!- depending on your project -->
                     <!-- ha ez benne marad, null-t ad vissza a PostMan-->
                     <annotationProcessorPaths>
                         <path>

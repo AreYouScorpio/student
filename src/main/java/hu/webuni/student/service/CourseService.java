@@ -38,13 +38,10 @@ public class CourseService {
     public List<Course> findCoursesByExample(Course example) {
         long courseId = example.getId();
         String courseName = example.getName();
+        System.out.println(courseName);
 
-        String teacherName = example.getTeacher().getName();
+//        int semester = example.getStudent().getSemester();
 
-        long studentId = example.getStudent().getId();
-
-
-        int semester = example.getStudent().getSemester();
 
         //Specification<Flight> spec = Specification.where(null); // üres Specification, ami semmire nem szűr
 
@@ -52,9 +49,10 @@ public class CourseService {
 
         ArrayList<Predicate> predicates = new ArrayList<Predicate>();
 
+
         QCourse course = QCourse.course;
 
-        if (courseId > 0) {
+        if (courseId > 0 ) {
 
             // spec = spec.and(FlightSpecifications.hasId(id));
             predicates.add(course.id.eq(courseId));
@@ -65,19 +63,8 @@ public class CourseService {
             predicates.add(course.name.startsWithIgnoreCase(courseName));
 
 
-        if (studentId > 0) {
 
-            // spec = spec.and(FlightSpecifications.hasId(id));
-            predicates.add(course.student.id.eq(studentId));
-        }
 
-        if (semester >= 1) // SpringFramework-ös StringUtils
-        //spec = spec.and(FlightSpecifications.hasTakeoffTime(takeoffTime));
-        {
-
-            predicates.add(course.student.semester.between(semester, semester+1));
-
-        }
 
 
         //return flightRepository.findAll(spec, Sort.by("id"));
