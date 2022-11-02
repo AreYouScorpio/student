@@ -5,6 +5,8 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import hu.webuni.student.model.Course;
 import hu.webuni.student.model.QCourse;
+import hu.webuni.student.model.Student;
+import hu.webuni.student.model.Teacher;
 import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +39,19 @@ public class CourseService {
 
     public List<Course> findCoursesByExample(Course example) {
         long courseId = example.getId();
+        System.out.println(courseId);
         String courseName = example.getName();
         System.out.println(courseName);
-
+        String teacherName = null;
+        Teacher teacher = example.getTeacher();
+        if (teacher != null)
+            teacherName = teacher.getName();
+        System.out.println(teacherName);
+        long studentId = 0L;
+        Student student = example.getStudent();
+        if (student != null)
+            studentId = student.getId();
+        System.out.println(studentId);
 //        int semester = example.getStudent().getSemester();
 
 
@@ -63,7 +75,15 @@ public class CourseService {
             predicates.add(course.name.startsWithIgnoreCase(courseName));
 
 
+        if (StringUtils.hasText(teacherName)) // SpringFramework-ös StringUtils
+            // spec = spec.and(FlightSpecifications.hasFlightNumber(flightNumber));
+            predicates.add(course.teacher.name.startsWithIgnoreCase(teacherName));
 
+        if (studentId > 0) {
+
+            // spec = spec.and(FlightSpecifications.hasId(id));
+            predicates.add(course.student.id.eq(studentId));
+        }
 
 
 
