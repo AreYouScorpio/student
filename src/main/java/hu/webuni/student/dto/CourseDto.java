@@ -12,7 +12,6 @@ import java.util.Set;
 public class CourseDto {
 
 
-
     private long id;
 
     //@Size(min = 3, max = 20)

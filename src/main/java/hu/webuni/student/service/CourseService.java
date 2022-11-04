@@ -1,10 +1,13 @@
 package hu.webuni.student.service;
 
+import com.querydsl.core.types.Predicate;
 import hu.webuni.student.model.Course;
+import hu.webuni.student.model.QCourse;
 import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,14 @@ public class CourseService {
     StudentRepository studentRepository;
     @Autowired
     CourseRepository courseRepository;
+
+
+    @Transactional
+    public List<Course> searchCourses(Predicate predicate) {
+        List<Course> courses = courseRepository.findAll(predicate, "Course.students", EntityGraph.EntityGraphType.LOAD);
+        courses = courseRepository.findAll(QCourse.course.in(courses), "Course.teachers", EntityGraph.EntityGraphType.LOAD);
+        return courses;
+    }
 
     @Transactional
     public Course save(Course course) {

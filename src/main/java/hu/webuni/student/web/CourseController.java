@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -81,9 +82,13 @@ public class CourseController {
 
     // Teacher`s solution added:
     @GetMapping("/searchNew")
-    public List<CourseDto> search(@QuerydslPredicate(root = Course.class) Predicate predicate) {
-        Iterable<Course> courses = courseRepository.findAll(predicate);
-       return courseMapper.courseSummariesToDtos(courses);
+    public List<CourseDto> search(@QuerydslPredicate(root = Course.class) Predicate predicate, @RequestParam Optional<Boolean> full) {
+        // Iterable<Course> courses = courseRepository.findAll(predicate);
+        Iterable<Course> result = courseService.searchCourses(predicate);
+        if(full.isEmpty()||!full.get())
+       return courseMapper.courseSummariesToDtos(result);
+        else
+            return courseMapper.coursesToDtos(result);
 
     }
 

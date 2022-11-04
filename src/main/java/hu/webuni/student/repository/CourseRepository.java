@@ -14,7 +14,23 @@ public interface CourseRepository extends
         JpaRepository<Course, Long>,
 
         QuerydslPredicateExecutor<Course>,
-        QuerydslBinderCustomizer<QCourse> {
+        QuerydslBinderCustomizer<QCourse>,
+        QueryDslWithEntityGraphRepository<Course, Long> {
+
+
+//    // tul sok talalat lenne, Descartes-szorzat, tul sok eredmenysor DB-bol
+//    @EntityGraph(attributePaths = {"teachers", "students"})
+//    List<Course> findAllWithTeachersAndStudents(Predicate predicate);
+//
+//    // nincs Descartes-szorzat, de nem tudja a Spring Data QueryDsl tamogatasa
+//    @EntityGraph(attributePaths = {"teachers"})
+//    List<Course> findAllWithTeachers(Predicate predicate);
+//
+//
+//    @EntityGraph(attributePaths = {"students"})
+//    List<Course> findAllWithStudents(Predicate predicate);
+
+
     @Override
     default void customize(QuerydslBindings bindings, QCourse course) {
         bindings.bind(course.name).first((path, value) -> path.startsWithIgnoreCase(value));
