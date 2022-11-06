@@ -33,6 +33,7 @@ public class Course {
     @ToString.Include
     private String name;
 
+
     @JsonIgnore
     @ManyToMany
     private Set<Student> students;
