@@ -22,7 +22,7 @@ public interface CourseMapper {
     CourseDto courseSummaryToDto(Course course);
 
     @IterableMapping(qualifiedByName = "summary")
-    List<CourseDto> courseSummariesToDtos(Iterable<Course> findAll);
+    List<CourseDto> courseSummariesToDtos(Iterable<Course> courses);
 
 
     List<CourseDto> coursesToDtos(Iterable<Course> courses);

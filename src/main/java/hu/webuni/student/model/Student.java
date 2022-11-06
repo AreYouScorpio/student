@@ -1,5 +1,6 @@
 package hu.webuni.student.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -33,6 +34,7 @@ public class Student {
     private LocalDate birthdate;
     private int semester;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "students")
     private Set<Course> courses;
 

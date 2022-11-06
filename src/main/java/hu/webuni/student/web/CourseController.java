@@ -83,13 +83,13 @@ public class CourseController {
     // Teacher`s solution added:
     @GetMapping("/searchNew")
     public List<CourseDto> search(@QuerydslPredicate(root = Course.class) Predicate predicate, @RequestParam Optional<Boolean> full) {
-        // Iterable<Course> courses = courseRepository.findAll(predicate);
+        //Iterable<Course> result = courseRepository.findAll(predicate);
         Iterable<Course> result = courseService.searchCourses(predicate);
+        System.out.println(result);
         if(full.isEmpty()||!full.get())
        return courseMapper.courseSummariesToDtos(result);
         else
             return courseMapper.coursesToDtos(result);
-
     }
 
 
