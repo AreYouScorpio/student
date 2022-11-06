@@ -2,6 +2,7 @@ package hu.webuni.student.model;
 
 import lombok.*;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@Cacheable
 public class Teacher {
 
     @Id

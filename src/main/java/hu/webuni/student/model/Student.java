@@ -3,10 +3,7 @@ package hu.webuni.student.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -19,6 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Entity
+@Cacheable
 public class Student {
 
     @Id
