@@ -5,6 +5,7 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import hu.webuni.student.model.Course;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.support.Querydsl;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -30,9 +31,12 @@ public class QueryDslWithEntityGraphRepositoryImpl extends SimpleJpaRepository<C
     }
 
     @Override
-    public List<Course> findAll(Predicate predicate, String entityGraphName, EntityGraph.EntityGraphType egType) {
+    public List<Course> findAll(Predicate predicate, String entityGraphName, EntityGraph.EntityGraphType egType, Sort sort) {
 
-        JPAQuery query = querydsl.createQuery(path).where(predicate);
+        //JPAQuery query = querydsl.createQuery(path).where(predicate);
+        // sort hozzaadasa:
+        JPAQuery query = (JPAQuery) querydsl.applySorting(sort, querydsl.createQuery(path).where(predicate));
+
         query.setHint(egType.getKey(), em.getEntityGraph(entityGraphName));
         return query.fetch();
     }

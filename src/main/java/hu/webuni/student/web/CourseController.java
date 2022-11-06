@@ -8,7 +8,9 @@ import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,11 +84,16 @@ public class CourseController {
 
     // Teacher`s solution added:
     @GetMapping("/searchNew")
-    public List<CourseDto> search(@QuerydslPredicate(root = Course.class) Predicate predicate, @RequestParam Optional<Boolean> full) {
+    public List<CourseDto> search(@QuerydslPredicate(root = Course.class) Predicate predicate, @RequestParam Optional<Boolean> full, @SortDefault("id") Pageable pageable) {
+        //id szt legyen default rendezes, h mar az elso page is rendezetten jojjon, ne legyen gond kesobb
         //Iterable<Course> result = courseRepository.findAll(predicate);
-        Iterable<Course> result = courseService.searchCourses(predicate);
+        boolean isSummaryNeeded = full.isEmpty() || !full.get();
+        Iterable<Course> result = isSummaryNeeded ?
+                courseRepository.findAll(predicate, pageable) :
+                courseService.searchCourses(predicate, pageable);
+        //csak fullos esetben jon a select course es a select count melle meg a 2db custom lekerdezes is (student , teacher)
         System.out.println(result);
-        if(full.isEmpty()||!full.get())
+        if(isSummaryNeeded)
        return courseMapper.courseSummariesToDtos(result);
         else
             return courseMapper.coursesToDtos(result);

@@ -1,12 +1,16 @@
 package hu.webuni.student.service;
 
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import hu.webuni.student.model.Course;
 import hu.webuni.student.model.QCourse;
 import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +30,27 @@ public class CourseService {
 
 
     @Transactional
-    public List<Course> searchCourses(Predicate predicate) {
+    public List<Course> searchCourses(Predicate predicate, Pageable pageable) {
+
+        /*
+
+        // without Pageable:
         List<Course> courses = courseRepository.findAll(predicate, "Course.students", EntityGraph.EntityGraphType.LOAD);
         courses = courseRepository.findAll(QCourse.course.in(courses), "Course.teachers", EntityGraph.EntityGraphType.LOAD);
+         */
+
+        //with Pageable:
+
+        Page<Course> coursePage = courseRepository.findAll(predicate, pageable);
+
+        BooleanExpression inPredicate = QCourse.course.in(coursePage.getContent());
+        List<Course> courses =
+                courseRepository.findAll(inPredicate, "Course.students", EntityGraph.EntityGraphType.LOAD, Sort.unsorted());
+        // itt felesleges rendezni, viszont mivel hozzaadtuk a sort parametert a QueryDslWithEntityGraphRepository-hoz, muszaj legyen egy parameter, am lehetne itt is pageable.getSort()
+
+        courses =
+                courseRepository.findAll(inPredicate, "Course.teachers", EntityGraph.EntityGraphType.LOAD, pageable.getSort());
+
         return courses;
     }
 
