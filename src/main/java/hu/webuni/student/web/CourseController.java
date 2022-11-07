@@ -41,7 +41,7 @@ public class CourseController {
     //LogEntryService logEntryService;
 
     @GetMapping
-    public List<CourseDto> getAllCourse() {
+    public Iterable<CourseDto> getAllCourse() {
         return courseMapper.coursesToDtos(courseRepository.findAll());
     }
 
@@ -96,7 +96,7 @@ public class CourseController {
         if(isSummaryNeeded)
        return courseMapper.courseSummariesToDtos(result);
         else
-            return courseMapper.coursesToDtos(result);
+            return (List<CourseDto>) courseMapper.coursesToDtos(result);
     }
 
 

@@ -16,6 +16,13 @@ public interface CourseMapper {
 
     CourseDto courseToDto(Course course);
 
+    Iterable<CourseDto> coursesToDtos(Iterable<Course> courses);
+
+    Course dtoToCourse(CourseDto courseDto);
+
+    Iterable<Course> dtosToCourses(Iterable<CourseDto> courseDtoIterable);
+
+
     @Named("summary")
     @Mapping(ignore = true, target = "teachers")
     @Mapping(ignore = true, target = "students")
@@ -25,10 +32,10 @@ public interface CourseMapper {
     List<CourseDto> courseSummariesToDtos(Iterable<Course> courses);
 
 
-    List<CourseDto> coursesToDtos(Iterable<Course> courses);
 
 
-    Course dtoToCourse(CourseDto courseDto);
+
+
 }
 
         /*

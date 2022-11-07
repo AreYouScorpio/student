@@ -1,6 +1,5 @@
 package hu.webuni.student.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,11 +33,9 @@ public class Course {
     private String name;
 
 
-    @JsonIgnore
     @ManyToMany
     private Set<Student> students;
 
-    @JsonIgnore
     @ManyToMany
     private Set<Teacher> teachers;
 
