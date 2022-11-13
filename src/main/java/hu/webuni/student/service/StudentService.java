@@ -9,6 +9,7 @@ import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -27,6 +28,8 @@ public class StudentService {
     StudentRepository studentRepository;
     @Autowired
     CourseRepository courseRepository;
+    @Autowired
+    SemesterService semesterService;
 
     @Transactional
     public Student save(Student student) {
@@ -112,6 +115,22 @@ public class StudentService {
             return studentRepository.save(student);
         } else
             throw new NoSuchElementException();
+    }
+
+
+    @Transactional
+    @Scheduled(cron = "*/15 * * * * *") //15mpenkent
+    public void updateSemesters(){
+        System.out.println("updateSemesters called");
+        studentRepository.findAll().forEach(student ->
+        {
+            updateStudentWithSemester(student);
+        });
+    }
+
+    private void updateStudentWithSemester(Student student) {
+        student.setFreeSemester(semesterService.getFreeSemester(student.getId()));
+        studentRepository.save(student);
     }
 
 }
