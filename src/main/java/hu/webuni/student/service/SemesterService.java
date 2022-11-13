@@ -9,8 +9,8 @@ public class SemesterService {
 
     private Random random = new Random();
 
-    public int getFreeSemesters(long foreignId) {
-        System.out.println("getSemester called");
+    public int getFreeSemester(long centralId) {
+        System.out.println("getFreeSemester called");
         try {
             Thread.sleep(5000);
         }
@@ -18,7 +18,7 @@ public class SemesterService {
         }
         int result = random.
                 nextInt(0, 6);
-        System.out.println("randomFreeSemesters: " + result);
+        System.out.println("randomFreeSemester: " + result);
         return result;
     }
 

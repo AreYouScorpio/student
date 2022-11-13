@@ -31,6 +31,9 @@ public class Student {
     private LocalDate birthdate;
     private int semester;
 
+    private int centralId;
+    private int freeSemester;
+
     @ManyToMany(mappedBy = "students")
     private Set<Course> courses;
 
