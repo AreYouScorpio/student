@@ -119,7 +119,8 @@ public class StudentService {
 
 
     @Transactional
-    @Scheduled(cron = "*/15 * * * * *") //15mpenkent
+    //@Scheduled(cron = "*/15 * * * * *") //15mpenkent -> ehelyett file-bol olvasni
+    @Scheduled(cron = "${scheduler.cron}")
     public void updateSemesters(){
         System.out.println("updateSemesters called");
         studentRepository.findAll().forEach(student ->
