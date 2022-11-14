@@ -130,8 +130,12 @@ public class StudentService {
     }
 
     private void updateStudentWithSemester(Student student) {
+        try {
         student.setFreeSemester(semesterService.getFreeSemester(student.getId()));
-        studentRepository.save(student);
+        studentRepository.save(student);}
+        catch (Exception e) {
+            System.out.println("Error catched");
+        }
     }
 
 }
