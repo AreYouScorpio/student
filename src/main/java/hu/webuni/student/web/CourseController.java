@@ -8,6 +8,7 @@ import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.SortDefault;
@@ -82,7 +83,10 @@ public class CourseController {
     }
 
 
-    // Teacher`s solution added:
+    // Teacher`s solution added Wk1:
+
+    // Wk2 cache added
+    @Cacheable("pagedCourses")
     @GetMapping("/searchNew")
     public List<CourseDto> search(@QuerydslPredicate(root = Course.class) Predicate predicate, @RequestParam Optional<Boolean> full, @SortDefault("id") Pageable pageable) {
         //id szt legyen default rendezes, h mar az elso page is rendezetten jojjon, ne legyen gond kesobb
