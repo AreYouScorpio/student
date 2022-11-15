@@ -7,6 +7,8 @@ import hu.webuni.student.model.QCourse;
 import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -28,6 +32,8 @@ public class CourseService {
     @Autowired
     CourseRepository courseRepository;
 
+    @PersistenceContext
+    EntityManager em;
 
     @Transactional
     public List<Course> searchCourses(Predicate predicate, Pageable pageable) {
@@ -169,5 +175,19 @@ public class CourseService {
         } else
             throw new NoSuchElementException();
     }
+
+
+    @Transactional
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public List<Course> getCourseHistory(long id){
+        List resultList = AuditReaderFactory.get(em)
+                .createQuery()
+                .forRevisionsOfEntity(Course.class, true, true) //csak entitasokat v torolt sorokat is
+                .add(AuditEntity.property("id").eq(id))
+                .getResultList();
+
+        return resultList;
+    }
+
 
 }

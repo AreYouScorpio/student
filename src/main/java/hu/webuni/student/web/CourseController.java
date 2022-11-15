@@ -104,6 +104,19 @@ public class CourseController {
     }
 
 
+    @GetMapping("/{id}/history")
+    public List<CourseDto> getHistoryById(@PathVariable long id) {
+
+
+        List<Course> courses = courseService.getCourseHistory(id);
+
+
+        return courseMapper.courseSummariesToDtos(courses);
+
+    }
+
+
+
     @DeleteMapping("/{id}")
     public void deleteCourse(@PathVariable long id) {
         courseService.delete(id);
