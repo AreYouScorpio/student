@@ -1,11 +1,12 @@
 package hu.webuni.student.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
-//@EnableAsync
+@EnableAsync
 //@EnableSchedulerLock(defaultLockAtMostFor = "1m") // ha vmeik node lefoglalta a lockot, es esetleg az a node elhalna, es ezert nem tudja felszabaditani a lefutott task utan, akkor max mennyi ideig eljen, percben
 public class SchedulerConfig {
 

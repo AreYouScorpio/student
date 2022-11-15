@@ -16,6 +16,7 @@ public class StudentDto {
     //@Size (min = 3, max = 10)
     private LocalDate birthdate;
     private int semester;
-
+    private int centralId;
+    private int freeSemester;
 
 }

@@ -9,16 +9,17 @@ import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +31,12 @@ public class StudentService {
     CourseRepository courseRepository;
     @Autowired
     SemesterService semesterService;
+
+    @Autowired
+    TaskScheduler taskScheduler;
+
+    private Map<Long, ScheduledFuture<?>> pollerJobs = new ConcurrentHashMap<>(); // mert tobbszalon meghivodhat, ezert concurrent hashmap
+
 
     @Transactional
     public Student save(Student student) {
@@ -45,9 +52,9 @@ public class StudentService {
 
         LocalDate birthdate = example.getBirthdate();
 
-        int semester = example.getSemester();
+            int semester = example.getSemester();
 
-        //Specification<Flight> spec = Specification.where(null); // üres Specification, ami semmire nem szűr
+            //Specification<Flight> spec = Specification.where(null); // üres Specification, ami semmire nem szűr
 
         // a FlightSpecifications feltételeit ide írjuk bele közvetlen --->
 
@@ -121,6 +128,7 @@ public class StudentService {
     @Transactional
     //@Scheduled(cron = "*/15 * * * * *") //15mpenkent -> ehelyett file-bol olvasni
     @Scheduled(cron = "${scheduler.cron}")
+    @Async
     public void updateSemesters(){
         System.out.println("updateSemesters called");
         studentRepository.findAll().forEach(student ->
@@ -131,11 +139,33 @@ public class StudentService {
 
     private void updateStudentWithSemester(Student student) {
         try {
-        student.setFreeSemester(semesterService.getFreeSemester(student.getId()));
+        student.setFreeSemester(semesterService.getFreeSemester(student.getCentralId()));
         studentRepository.save(student);}
         catch (Exception e) {
-            System.out.println("Error catched");
+            System.out.println("Error catched for id: "+ student.getId() + " and centralId: " +student.getCentralId() +" in StudentService/updateStudentWithSemester() ..startPolling" );
+            startPollingForSemester(student.getId(), 500);
+            stopDelayPollingForSemester(student.getId()); // hogy ne legyen polling es adatmentes, ha mar a hiba helyett jott megfelelo eredmeny, kulonben allandoan probalna updatelni a hibat dobo student freeSemester-et
         }
+    }
+
+
+    public void startPollingForSemester(long id, long rate){ // cron helyett fixed rate scheduling lesz
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            Optional<Student> studentOptional = studentRepository.findById(id);
+            System.out.println("startPollingForSemester starts @ id: "+id + " with rate: " + rate);
+            if (studentOptional.isPresent())
+                updateStudentWithSemester(studentOptional.get());
+        }, rate);
+        stopDelayPollingForSemester(id); // leallitani, nehogy meg egyet inditsunk ref nelkul, ha nem lett leallitva elozo
+        pollerJobs.put(id, scheduledFuture);
+        //System.out.println("actual PollerJobs map: " + pollerJobs.toString());
+    }
+
+    public void stopDelayPollingForSemester(long id){
+        System.out.println("stopPollingForStudent for id: " + id);
+        ScheduledFuture<?> scheduledFuture = pollerJobs.get(id);
+        if(scheduledFuture!=null)
+            scheduledFuture.cancel(false); // ha epp futasban van, akarjuk-e megszakitani, azt nem akarjuk
     }
 
 }

@@ -49,7 +49,10 @@ public class InitDbService {
         Course course3 = courseRepository.save(new Course("holland", Set.of(student3), Set.of(teacher3)));
         Course course4 = courseRepository.save(new Course("magyar", Set.of(student4), Set.of(teacher4)));
 
-
+        student1.setCentralId(101);
+        student2.setCentralId(102);
+        student3.setCentralId(103);
+        student4.setCentralId(104);
 
 //        Course course1 = courseRepository.save(new Course("angol", student1, teacher1));
 //        Course course2 = courseRepository.save(new Course("nemet", student2, teacher2));

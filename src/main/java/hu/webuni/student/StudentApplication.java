@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class StudentApplication implements CommandLineRunner{
 
+	public static int testNumber = 0;
 
 	@Autowired
 	InitDbService initDbService;
@@ -32,6 +33,8 @@ public class StudentApplication implements CommandLineRunner{
 //		initDbService.createUsersIfNeeded();
 
 		initDbService.addInitData();
+
+
 
 	}
 
