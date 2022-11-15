@@ -1,6 +1,7 @@
 package hu.webuni.student.model;
 
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Cacheable
+@Audited
 public class Teacher {
 
     @Id

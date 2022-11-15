@@ -8,6 +8,7 @@ import hu.webuni.student.repository.StudentRepository;
 import hu.webuni.student.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,9 @@ public class InitDbService {
 
     @Autowired
     StudentService studentService;
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
 
     @Transactional
@@ -60,6 +64,21 @@ public class InitDbService {
 //        Course course4 = courseRepository.save(new Course("magyar", student4, teacher4));
 
 
+    }
+
+
+    @Transactional
+    public void deleteDb() {
+        courseRepository.deleteAll();
+        teacherRepository.deleteAll();
+        studentRepository.deleteAll();
+    }
+
+    @Transactional
+    public void deleteAudTables(){
+        jdbcTemplate.update("DELETE FROM course_aud");
+        jdbcTemplate.update("DELETE FROM student_aud");
+        jdbcTemplate.update("DELETE FROM teacher_aud");
     }
 
 }

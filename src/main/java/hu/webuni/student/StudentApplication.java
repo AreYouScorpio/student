@@ -34,6 +34,10 @@ public class StudentApplication implements CommandLineRunner{
 
 //		initDbService.createUsersIfNeeded();
 
+
+//		initDbService.deleteDb();
+//		initDbService.deleteAudTables();
+
 		initDbService.addInitData();
 
 

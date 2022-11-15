@@ -1,6 +1,7 @@
 package hu.webuni.student.model;
 
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Entity
+@Audited
 @NamedEntityGraph(
         name = "Course.students",
         attributeNodes = @NamedAttributeNode("students"))
