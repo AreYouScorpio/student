@@ -4,6 +4,7 @@ import com.querydsl.core.types.Predicate;
 import hu.webuni.student.dto.CourseDto;
 import hu.webuni.student.mapper.CourseMapper;
 import hu.webuni.student.model.Course;
+import hu.webuni.student.model.HistoryData;
 import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -105,13 +107,27 @@ public class CourseController {
 
 
     @GetMapping("/{id}/history")
-    public List<CourseDto> getHistoryById(@PathVariable long id) {
+    public List<HistoryData<CourseDto>> getHistoryById(@PathVariable long id) {
 
 
-        List<Course> courses = courseService.getCourseHistory(id);
+        List<HistoryData<Course>> courses = courseService.getCourseHistory(id);
 
 
-        return courseMapper.courseSummariesToDtos(courses);
+        List<HistoryData<CourseDto>> courseDtosWithHistory =
+                new ArrayList<>();
+
+        courses.forEach( courseHistoryData ->
+                courseDtosWithHistory.add(
+                        new HistoryData<>(
+                                courseMapper.courseSummaryToDto(courseHistoryData.getData()),
+                                courseHistoryData.getRevType(),
+                                courseHistoryData.getRevision(),
+                                courseHistoryData.getDate()
+                        )));
+
+        return courseDtosWithHistory;
+
+//        return courseMapper.courseSummariesToDtos(courses);
 
     }
 

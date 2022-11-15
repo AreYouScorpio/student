@@ -3,11 +3,14 @@ package hu.webuni.student.service;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import hu.webuni.student.model.Course;
+import hu.webuni.student.model.HistoryData;
 import hu.webuni.student.model.QCourse;
 import hu.webuni.student.repository.CourseRepository;
 import hu.webuni.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -179,12 +182,23 @@ public class CourseService {
 
     @Transactional
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public List<Course> getCourseHistory(long id){
+    public List<HistoryData<Course>> getCourseHistory(long id) {
         List resultList = AuditReaderFactory.get(em)
                 .createQuery()
-                .forRevisionsOfEntity(Course.class, true, true) //csak entitasokat v torolt sorokat is
+                .forRevisionsOfEntity(Course.class, false, true) //csak entitasokat v torolt sorokat is
                 .add(AuditEntity.property("id").eq(id))
-                .getResultList();
+                .getResultList()
+                .stream()
+                .map(o-> {
+                    Object[] objArray = (Object[]) o;
+                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
+                    return new HistoryData<Course> (
+                            (Course)  objArray[0],
+                            (RevisionType) objArray[2],
+                            revisionEntity.getId(),
+                            revisionEntity.getRevisionDate()
+                            );
+                }).toList();
 
         return resultList;
     }
