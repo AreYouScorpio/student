@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -277,7 +278,7 @@ public class CourseService {
 
         //Timestamp timestamp = new Timestamp(new Date(String.valueOf(date)).getTime());
         Date date1 = new Date();
-        date1 = convertToDateViaSqlDate(date.toLocalDate());
+        date1 = convertToDateViaSqlDate(date.toLocalDate()); //for date
         long date2 = date1.getTime();
 
         List resultList = AuditReaderFactory.get(em)
@@ -312,9 +313,81 @@ public class CourseService {
         return resultList;
     }
 
+
+    @Transactional
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public List<HistoryData<Course>> getCourseStatusByDateTime(long id, LocalDateTime date) {
+
+
+        //Timestamp timestamp = new Timestamp(new Date(String.valueOf(date)).getTime());
+        Date date1 = new Date();
+        date1 = convertToDateViaSqlDateTime(date);
+        long date2 = date1.getTime();
+
+        List resultList = AuditReaderFactory.get(em)
+                .createQuery()
+                .forRevisionsOfEntity(Course.class, false, false) //csak entitasokat v torolt sorokat is
+                //.add(AuditEntity.property("id").eq(id))
+                //.add(AuditEntity.property("timestamp").le(date2))
+                //.add(AuditEntity.revisionProperty("date").between(date.minusDays(1),date.plusDays(1)))
+                //.addProjection( AuditEntity.revisionProperty( "date" ) )
+                .add(AuditEntity.revisionProperty("timestamp").le(date2))
+                .add(AuditEntity.property("id").eq(id))
+                //.add(AuditEntity.revisionProperty("date").gt(date.minusDays(1)))
+                //.add(AuditEntity.revisionProperty("date").lt(date.plusDays(1)))
+                //.traverseRelation("teacher", JoinType.LEFT)
+                //.traverseRelation("student", JoinType.LEFT)
+                .getResultList()
+                .stream()
+                .map(o -> {
+                    Object[] objArray = (Object[]) o;
+                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
+                    Course course = (Course) objArray[0];
+                    course.getName().toString(); //betoltes kikenyszeritese, barmit hivok rajta, csak akkor toltodik be (controllerben sima mappeles, h a kapcsolatok is jojjenek, de lecsatolt allapotban kerulnek ide)
+                    course.getStudents().size();
+                    course.getTeachers().size();
+                    return new HistoryData<Course>(
+                            course,
+                            (RevisionType) objArray[2],
+                            revisionEntity.getId(),
+                            revisionEntity.getRevisionDate()
+                    );
+                }).toList();
+
+//        List new = resultList.forEach(o -> o);
+//        List filteredResultList = resultList.stream().filter((o) -> o.() == id);
+//
+//        return filteredResultList;
+        return resultList;
+    }
+
+
+
     public Date convertToDateViaSqlDate(LocalDate dateToConvert) {
         return java.sql.Date.valueOf(dateToConvert);
     }
 
+    public Date convertToDateViaSqlDateTime(LocalDateTime dateToConvert) {
 
+
+        Timestamp timestamp = Timestamp.valueOf(dateToConvert.plusHours(1));
+
+    //LocalDateTime dt = dateToConvert;
+// save time information (hour, minute, seconds, fraction of seconds)
+      //      LocalTime savedTime = dt.toLocalTime();
+    // convert to Date (time information is lost)
+    //java.sql.Date date = java.sql.Date.valueOf(dt.toLocalDate());
+
+    // retrieve back the LocalDate (only day/month/year)
+    //LocalDate localDate = date.toLocalDate();
+    // retrieve the LocalDateTime, with the original time values
+    //LocalDateTime ldt = localDate.atTime(savedTime);
+
+//    public LocalDateTime convertToLocalDateTimeViaMilisecond(Date dateToConvert) {
+//        return Instant.ofEpochMilli(dateToConvert.getTime())
+//                .atZone(ZoneId.systemDefault())
+//                .toLocalDateTime();
+//    }
+        return timestamp;
+    }
 }

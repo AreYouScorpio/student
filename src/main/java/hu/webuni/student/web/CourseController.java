@@ -160,6 +160,32 @@ public class CourseController {
 
     }
 
+    @GetMapping("/{id}/{date}/statusByDate")
+    public List<HistoryData<CourseDto>> getCourseStatusByDate(@PathVariable long id, @PathVariable LocalDateTime date) {
+
+
+        List<HistoryData<Course>> courses = courseService.getCourseStatusByDateTime(id, date);
+
+
+        List<HistoryData<CourseDto>> courseDtosWithHistory =
+                new ArrayList<>();
+
+        courses.forEach(courseHistoryData ->
+                courseDtosWithHistory.add(
+                        new HistoryData<>(
+//                                courseMapper.courseSummaryToDto(courseHistoryData.getData()), //kapcsolatok nelkuli mappeles
+                                courseMapper.courseToDto(courseHistoryData.getData()), //kapcsolatokkal mappeles, viszont lecsatolt allapotban lesznek, ennek a betolteset a service-ben kell kikenyszeriteni,
+                                courseHistoryData.getRevType(),
+                                courseHistoryData.getRevision(),
+                                courseHistoryData.getDate()
+                        )));
+
+        return courseDtosWithHistory;
+
+//        return courseMapper.courseSummariesToDtos(courses);
+
+    }
+
 
     @DeleteMapping("/{id}")
     public void deleteCourse(@PathVariable long id) {
