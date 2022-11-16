@@ -119,7 +119,8 @@ public class CourseController {
         courses.forEach( courseHistoryData ->
                 courseDtosWithHistory.add(
                         new HistoryData<>(
-                                courseMapper.courseSummaryToDto(courseHistoryData.getData()),
+//                                courseMapper.courseSummaryToDto(courseHistoryData.getData()), //kapcsolatok nelkuli mappeles
+                                courseMapper.courseToDto(courseHistoryData.getData()), //kapcsolatokkal mappeles, viszont lecsatolt allapotban lesznek, ennek a betolteset a service-ben kell kikenyszeriteni,
                                 courseHistoryData.getRevType(),
                                 courseHistoryData.getRevision(),
                                 courseHistoryData.getDate()

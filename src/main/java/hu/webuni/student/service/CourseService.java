@@ -179,6 +179,32 @@ public class CourseService {
             throw new NoSuchElementException();
     }
 
+   // this will be okay for fixed revision, forRevisionsOfEntity + traverseRelation
+//
+//    @Transactional
+//    @SuppressWarnings({"rawtypes", "unchecked"})
+//    public List<HistoryData<Course>> getCourseHistory(long id) {
+//        List resultList = AuditReaderFactory.get(em)
+//                .createQuery()
+//                .forRevisionsOfEntity(Course.class, false, true) //csak entitasokat v torolt sorokat is
+//                .add(AuditEntity.property("id").eq(id))
+//                .traverseRelation("address", JoinType.LEFT)
+//                .getResultList()
+//                .stream()
+//                .map(o-> {
+//                    Object[] objArray = (Object[]) o;
+//                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
+//                    return new HistoryData<Course> (
+//                            (Course)  objArray[0],
+//                            (RevisionType) objArray[2],
+//                            revisionEntity.getId(),
+//                            revisionEntity.getRevisionDate()
+//                            );
+//                }).toList();
+//
+//        return resultList;
+//    }
+
 
     @Transactional
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -187,13 +213,18 @@ public class CourseService {
                 .createQuery()
                 .forRevisionsOfEntity(Course.class, false, true) //csak entitasokat v torolt sorokat is
                 .add(AuditEntity.property("id").eq(id))
+                //.traverseRelation("address", JoinType.LEFT) torolni kell, sajnos nem fixed revision-nel nem lehet, lentebb kell megoldani
                 .getResultList()
                 .stream()
                 .map(o-> {
                     Object[] objArray = (Object[]) o;
                     DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
+                    Course course = (Course) objArray[0];
+                    course.getName().toString(); //betoltes kikenyszeritese, barmit hivok rajta, csak akkor toltodik be (controllerben sima mappeles, h a kapcsolatok is jojjenek, de lecsatolt allapotban kerulnek ide)
+                    course.getStudents().size();
+                    course.getTeachers().size();
                     return new HistoryData<Course> (
-                            (Course)  objArray[0],
+                            course,
                             (RevisionType) objArray[2],
                             revisionEntity.getId(),
                             revisionEntity.getRevisionDate()
@@ -202,6 +233,5 @@ public class CourseService {
 
         return resultList;
     }
-
 
 }
