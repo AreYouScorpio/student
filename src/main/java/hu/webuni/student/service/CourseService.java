@@ -25,10 +25,7 @@ import javax.persistence.PersistenceContext;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -316,7 +313,7 @@ public class CourseService {
 
     @Transactional
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public List<HistoryData<Course>> getCourseStatusByDateTime(long id, LocalDateTime date) {
+    public List<HistoryData<Course>> getCourseStatusByDateTime(long id, LocalDateTime date) throws Throwable {
 
 
         //Timestamp timestamp = new Timestamp(new Date(String.valueOf(date)).getTime());
@@ -333,6 +330,7 @@ public class CourseService {
                 //.addProjection( AuditEntity.revisionProperty( "date" ) )
                 .add(AuditEntity.revisionProperty("timestamp").le(date2))
                 .add(AuditEntity.property("id").eq(id))
+                //.add(AuditEntity.revisionNumber().maximize())
                 //.add(AuditEntity.revisionProperty("date").gt(date.minusDays(1)))
                 //.add(AuditEntity.revisionProperty("date").lt(date.plusDays(1)))
                 //.traverseRelation("teacher", JoinType.LEFT)
@@ -352,7 +350,14 @@ public class CourseService {
                             revisionEntity.getId(),
                             revisionEntity.getRevisionDate()
                     );
-                }).toList();
+                })
+             //   .toList().stream()
+                .max(Comparator.comparing(o -> {
+                    Object[] objArray = (Object[]) o;
+                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
+                    return revisionEntity.getRevisionDate();
+                })).orElseThrow(NoSuchElementException::new)
+                .toList();
 
 //        List new = resultList.forEach(o -> o);
 //        List filteredResultList = resultList.stream().filter((o) -> o.() == id);
@@ -360,6 +365,12 @@ public class CourseService {
 //        return filteredResultList;
         return resultList;
     }
+
+
+
+
+
+
 
 
 
