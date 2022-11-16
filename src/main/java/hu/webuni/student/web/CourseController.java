@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -99,8 +100,8 @@ public class CourseController {
                 courseService.searchCourses(predicate, pageable);
         //csak fullos esetben jon a select course es a select count melle meg a 2db custom lekerdezes is (student , teacher)
         System.out.println(result);
-        if(isSummaryNeeded)
-       return courseMapper.courseSummariesToDtos(result);
+        if (isSummaryNeeded)
+            return courseMapper.courseSummariesToDtos(result);
         else
             return (List<CourseDto>) courseMapper.coursesToDtos(result);
     }
@@ -116,7 +117,7 @@ public class CourseController {
         List<HistoryData<CourseDto>> courseDtosWithHistory =
                 new ArrayList<>();
 
-        courses.forEach( courseHistoryData ->
+        courses.forEach(courseHistoryData ->
                 courseDtosWithHistory.add(
                         new HistoryData<>(
 //                                courseMapper.courseSummaryToDto(courseHistoryData.getData()), //kapcsolatok nelkuli mappeles
@@ -132,6 +133,32 @@ public class CourseController {
 
     }
 
+
+    @GetMapping("/{date}/historyByDate")
+    public List<HistoryData<CourseDto>> getHistoryByDate(@PathVariable LocalDateTime date) {
+
+
+        List<HistoryData<Course>> courses = courseService.getCourseHistoryByDate(date);
+
+
+        List<HistoryData<CourseDto>> courseDtosWithHistory =
+                new ArrayList<>();
+
+        courses.forEach(courseHistoryData ->
+                courseDtosWithHistory.add(
+                        new HistoryData<>(
+//                                courseMapper.courseSummaryToDto(courseHistoryData.getData()), //kapcsolatok nelkuli mappeles
+                                courseMapper.courseToDto(courseHistoryData.getData()), //kapcsolatokkal mappeles, viszont lecsatolt allapotban lesznek, ennek a betolteset a service-ben kell kikenyszeriteni,
+                                courseHistoryData.getRevType(),
+                                courseHistoryData.getRevision(),
+                                courseHistoryData.getDate()
+                        )));
+
+        return courseDtosWithHistory;
+
+//        return courseMapper.courseSummariesToDtos(courses);
+
+    }
 
 
     @DeleteMapping("/{id}")
@@ -218,8 +245,6 @@ new PutMapping after MapStruct added:
 
 
      */
-
-
 
 
 }

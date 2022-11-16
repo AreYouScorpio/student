@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -179,7 +182,7 @@ public class CourseService {
             throw new NoSuchElementException();
     }
 
-   // this will be okay for fixed revision, forRevisionsOfEntity + traverseRelation
+    // this will be okay for fixed revision, forRevisionsOfEntity + traverseRelation
 //
 //    @Transactional
 //    @SuppressWarnings({"rawtypes", "unchecked"})
@@ -216,22 +219,102 @@ public class CourseService {
                 //.traverseRelation("address", JoinType.LEFT) torolni kell, sajnos nem fixed revision-nel nem lehet, lentebb kell megoldani
                 .getResultList()
                 .stream()
-                .map(o-> {
+                .map(o -> {
                     Object[] objArray = (Object[]) o;
                     DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
                     Course course = (Course) objArray[0];
                     course.getName().toString(); //betoltes kikenyszeritese, barmit hivok rajta, csak akkor toltodik be (controllerben sima mappeles, h a kapcsolatok is jojjenek, de lecsatolt allapotban kerulnek ide)
                     course.getStudents().size();
                     course.getTeachers().size();
-                    return new HistoryData<Course> (
+                    return new HistoryData<Course>(
                             course,
                             (RevisionType) objArray[2],
                             revisionEntity.getId(),
                             revisionEntity.getRevisionDate()
-                            );
+                    );
                 }).toList();
 
         return resultList;
     }
+
+
+    @Transactional
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public List<HistoryData<Course>> getCourseHistoryByDate(LocalDateTime date) {
+
+
+        //https://stackoverflow.com/questions/45914795/hibernate-envers-how-to-get-all-current-enties-with-their-creation-timestamps
+//        AuditQuery query = AuditReaderFactory.get(em)
+//                .createQuery()
+//                .forRevisionsOfEntity( Course.class, true, false )
+//                .addProjection( AuditEntity.id() )
+//                .addProjection( AuditEntity.revisionProperty( "date" ) )
+//                .add( AuditEntity.revisionType().eq( RevisionType.ADD ) );
+//
+//
+//        AuditQuery query2 = AuditReaderFactory.get(em)
+//                .createQuery()
+//                .forRevisionsOfEntity( Course.class, true, false )
+//                .addProjection( AuditEntity.id() )
+//                .addProjection( AuditEntity.revisionNumber().max() );
+//
+//        for ( Map.Entry<YourEntityIdType,Number> entry : idRevisionPairs.entrySet() ) {
+//            AuditQuery query = auditReader.createQuery()
+//                    .forEntitiesAtRevision( Client.class, entry.getValue() )
+//                    .add( AuditEntity.id().eq( entry.getKey() )
+//                            .addProjection( ... );
+//
+//            // here take the results from query and the id-timestamp pairs and
+//            // marry them into some DTO you return.
+//        }
+
+//        https://stackoverflow.com/questions/21591381/querying-all-hibernate-envers-revisions-between-two-dates
+//        List<Object[]> revisions = (List<Object[]>) getAuditReader().createQuery()
+//                .forRevisionsOfEntity(MYCLASS.class, false, true)
+//                .add(AuditEntity.revisionProperty("timestamp").gt(startDate))
+//                .add(AuditEntity.revisionProperty("timestamp").lt(endDate))
+//                .getResultList();
+
+        //Timestamp timestamp = new Timestamp(new Date(String.valueOf(date)).getTime());
+        Date date1 = new Date();
+        date1 = convertToDateViaSqlDate(date.toLocalDate());
+        long date2 = date1.getTime();
+
+        List resultList = AuditReaderFactory.get(em)
+                .createQuery()
+                .forRevisionsOfEntity(Course.class, false, true) //csak entitasokat v torolt sorokat is
+                //.add(AuditEntity.property("id").eq(id))
+                //.add(AuditEntity.property("timestamp").le(date2))
+                //.add(AuditEntity.revisionProperty("date").between(date.minusDays(1),date.plusDays(1)))
+                //.addProjection( AuditEntity.revisionProperty( "date" ) )
+                .add(AuditEntity.revisionProperty("timestamp").le(date2))
+                //.add(AuditEntity.revisionProperty("date").gt(date.minusDays(1)))
+                //.add(AuditEntity.revisionProperty("date").lt(date.plusDays(1)))
+                //.traverseRelation("teacher", JoinType.LEFT)
+                //.traverseRelation("student", JoinType.LEFT)
+                .getResultList()
+                .stream()
+                .map(o -> {
+                    Object[] objArray = (Object[]) o;
+                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
+                    Course course = (Course) objArray[0];
+                    course.getName().toString(); //betoltes kikenyszeritese, barmit hivok rajta, csak akkor toltodik be (controllerben sima mappeles, h a kapcsolatok is jojjenek, de lecsatolt allapotban kerulnek ide)
+                    course.getStudents().size();
+                    course.getTeachers().size();
+                    return new HistoryData<Course>(
+                            course,
+                            (RevisionType) objArray[2],
+                            revisionEntity.getId(),
+                            revisionEntity.getRevisionDate()
+                    );
+                }).toList();
+
+        return resultList;
+    }
+
+    public Date convertToDateViaSqlDate(LocalDate dateToConvert) {
+        return java.sql.Date.valueOf(dateToConvert);
+    }
+
 
 }
