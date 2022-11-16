@@ -161,7 +161,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}/{date}/statusByDate")
-    public List<HistoryData<CourseDto>> getCourseStatusByDate(@PathVariable long id, @PathVariable LocalDateTime date) {
+    public List<HistoryData<CourseDto>> getCourseStatusByDate(@PathVariable long id, @PathVariable LocalDateTime date) throws Throwable {
 
 
         List<HistoryData<Course>> courses = courseService.getCourseStatusByDateTime(id, date);

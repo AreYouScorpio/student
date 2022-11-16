@@ -323,7 +323,7 @@ public class CourseService {
 
         List resultList = AuditReaderFactory.get(em)
                 .createQuery()
-                .forRevisionsOfEntity(Course.class, false, false) //csak entitasokat v torolt sorokat is
+                .forRevisionsOfEntity(Course.class, false, true) //csak entitasokat v torolt sorokat is
                 //.add(AuditEntity.property("id").eq(id))
                 //.add(AuditEntity.property("timestamp").le(date2))
                 //.add(AuditEntity.revisionProperty("date").between(date.minusDays(1),date.plusDays(1)))
@@ -352,11 +352,11 @@ public class CourseService {
                     );
                 })
              //   .toList().stream()
-                .max(Comparator.comparing(o -> {
-                    Object[] objArray = (Object[]) o;
-                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
-                    return revisionEntity.getRevisionDate();
-                })).orElseThrow(NoSuchElementException::new)
+//                .max(Comparator.comparing(o -> {
+//                    Object[] objArray = (Object[]) o;
+//                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
+//                    return revisionEntity.getRevisionDate();
+//                })).orElseThrow(NoSuchElementException::new)
                 .toList();
 
 //        List new = resultList.forEach(o -> o);
