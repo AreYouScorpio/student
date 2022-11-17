@@ -20,10 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -129,7 +126,6 @@ public class CourseController {
 
         return courseDtosWithHistory;
 
-//        return courseMapper.courseSummariesToDtos(courses);
 
     }
 
@@ -156,7 +152,6 @@ public class CourseController {
 
         return courseDtosWithHistory;
 
-//        return courseMapper.courseSummariesToDtos(courses);
 
     }
 
@@ -180,9 +175,25 @@ public class CourseController {
                                 courseHistoryData.getDate()
                         )));
 
+
+//        return courseDtosWithHistory.stream().max(Comparator.comparing(courseDtoHistoryData -> courseDtoHistoryData.getDate())).stream().toList();
+
         return courseDtosWithHistory;
 
 //        return courseMapper.courseSummariesToDtos(courses);
+
+    }
+
+
+    @GetMapping("/{id}/{date}/statusByDateOnlyValid")
+    public CourseDto getCourseStatusByDateOnlyValid(@PathVariable long id, @PathVariable LocalDateTime date) throws Throwable {
+
+
+        HistoryData<Course> course = courseService.getCourseStatusByDateOnlyValid(id, date);
+        Course courseResult = course.getData();
+
+        return courseMapper.courseToDto(courseResult);
+
 
     }
 

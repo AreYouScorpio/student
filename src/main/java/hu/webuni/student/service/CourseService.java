@@ -25,7 +25,10 @@ import javax.persistence.PersistenceContext;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -241,37 +244,9 @@ public class CourseService {
     public List<HistoryData<Course>> getCourseHistoryByDate(LocalDateTime date) {
 
 
-        //https://stackoverflow.com/questions/45914795/hibernate-envers-how-to-get-all-current-enties-with-their-creation-timestamps
-//        AuditQuery query = AuditReaderFactory.get(em)
-//                .createQuery()
-//                .forRevisionsOfEntity( Course.class, true, false )
-//                .addProjection( AuditEntity.id() )
-//                .addProjection( AuditEntity.revisionProperty( "date" ) )
-//                .add( AuditEntity.revisionType().eq( RevisionType.ADD ) );
-//
-//
-//        AuditQuery query2 = AuditReaderFactory.get(em)
-//                .createQuery()
-//                .forRevisionsOfEntity( Course.class, true, false )
-//                .addProjection( AuditEntity.id() )
-//                .addProjection( AuditEntity.revisionNumber().max() );
-//
-//        for ( Map.Entry<YourEntityIdType,Number> entry : idRevisionPairs.entrySet() ) {
-//            AuditQuery query = auditReader.createQuery()
-//                    .forEntitiesAtRevision( Client.class, entry.getValue() )
-//                    .add( AuditEntity.id().eq( entry.getKey() )
-//                            .addProjection( ... );
-//
-//            // here take the results from query and the id-timestamp pairs and
-//            // marry them into some DTO you return.
-//        }
 
-//        https://stackoverflow.com/questions/21591381/querying-all-hibernate-envers-revisions-between-two-dates
-//        List<Object[]> revisions = (List<Object[]>) getAuditReader().createQuery()
-//                .forRevisionsOfEntity(MYCLASS.class, false, true)
-//                .add(AuditEntity.revisionProperty("timestamp").gt(startDate))
-//                .add(AuditEntity.revisionProperty("timestamp").lt(endDate))
-//                .getResultList();
+
+
 
         //Timestamp timestamp = new Timestamp(new Date(String.valueOf(date)).getTime());
         Date date1 = new Date();
@@ -330,7 +305,7 @@ public class CourseService {
                 //.addProjection( AuditEntity.revisionProperty( "date" ) )
                 .add(AuditEntity.revisionProperty("timestamp").le(date2))
                 .add(AuditEntity.property("id").eq(id))
-                //.add(AuditEntity.revisionNumber().maximize())
+                //.add(AuditEntity.revisionNumber().maximize()
                 //.add(AuditEntity.revisionProperty("date").gt(date.minusDays(1)))
                 //.add(AuditEntity.revisionProperty("date").lt(date.plusDays(1)))
                 //.traverseRelation("teacher", JoinType.LEFT)
@@ -351,18 +326,10 @@ public class CourseService {
                             revisionEntity.getRevisionDate()
                     );
                 })
-             //   .toList().stream()
-//                .max(Comparator.comparing(o -> {
-//                    Object[] objArray = (Object[]) o;
-//                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) objArray[1];
-//                    return revisionEntity.getRevisionDate();
-//                })).orElseThrow(NoSuchElementException::new)
                 .toList();
 
-//        List new = resultList.forEach(o -> o);
-//        List filteredResultList = resultList.stream().filter((o) -> o.() == id);
-//
-//        return filteredResultList;
+
+
         return resultList;
     }
 
@@ -383,22 +350,29 @@ public class CourseService {
 
         Timestamp timestamp = Timestamp.valueOf(dateToConvert.plusHours(1));
 
-    //LocalDateTime dt = dateToConvert;
-// save time information (hour, minute, seconds, fraction of seconds)
-      //      LocalTime savedTime = dt.toLocalTime();
-    // convert to Date (time information is lost)
-    //java.sql.Date date = java.sql.Date.valueOf(dt.toLocalDate());
-
-    // retrieve back the LocalDate (only day/month/year)
-    //LocalDate localDate = date.toLocalDate();
-    // retrieve the LocalDateTime, with the original time values
-    //LocalDateTime ldt = localDate.atTime(savedTime);
-
-//    public LocalDateTime convertToLocalDateTimeViaMilisecond(Date dateToConvert) {
-//        return Instant.ofEpochMilli(dateToConvert.getTime())
-//                .atZone(ZoneId.systemDefault())
-//                .toLocalDateTime();
-//    }
         return timestamp;
     }
+
+    @Transactional
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public HistoryData<Course> getCourseStatusByDateOnlyValid(long id, LocalDateTime date) throws Throwable {
+
+
+        List<HistoryData<Course>> resultList = getCourseStatusByDateTime(id, date);
+
+        System.out.println("A lista merete: " + resultList.size());
+
+        HistoryData<Course> result = new HistoryData<Course>();
+
+        if (resultList.size()>0) result
+        = resultList.get(resultList.size()-1);
+
+
+        return result;
+    }
+
+
+
+
+
 }
